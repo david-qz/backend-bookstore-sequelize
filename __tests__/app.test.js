@@ -27,4 +27,23 @@ describe('backend-express-template routes', () => {
             releaseYear: expect.any(Number)
         }));
     });
+
+    it('GET /api/v1/books/:id should return a book with authors', async () => {
+        const response = await request(app).get('/api/v1/books/1');
+        expect(response.status).toEqual(200);
+
+        const book = response.body;
+        expect(book).toEqual({
+            id: expect.any(Number),
+            title: expect.any(String),
+            releaseYear: expect.any(Number),
+            Authors: [
+                {
+                    id: expect.any(Number),
+                    name: expect.any(String),
+                    BookAuthor: expect.any(Object)
+                }
+            ]
+        });
+    });
 });
