@@ -20,6 +20,8 @@ describe('sequelize bookstore routes', () => {
         await db.sequelize.close();
     });
 
+    // books routes
+
     it('GET /api/v1/books should return a list of books', async () => {
         const response = await request(app).get('/api/v1/books');
         expect(response.status).toEqual(200);
@@ -64,5 +66,45 @@ describe('sequelize bookstore routes', () => {
             Authors: expect.any(Array)
         });
         expect(book.Authors.length).toEqual(2);
+    });
+
+    // authors routes
+
+    it('GET /api/v1/authors should return a list of authors', async () => {
+        const response = await request(app).get('/api/v1/authors');
+        expect(response.status).toEqual(200);
+
+        const authors = response.body;
+        expect(authors).toBeInstanceOf(Array);
+        authors.forEach(x => expect(x).toEqual({
+            id: expect.any(Number),
+            name: expect.any(String)
+        }));
+    });
+
+    it('GET /api/v1/authors/:id should return an author with books', async () => {
+        const response = await request(app).get('/api/v1/authors/1');
+        expect(response.status).toEqual(200);
+
+        const author = response.body;
+        expect(author).toEqual({
+            id: expect.any(Number),
+            name: expect.any(String),
+            Books: expect.any(Array)
+        });
+        expect(author.Books.length).toEqual(4);
+    });
+
+    it('POST /api/v1/authors should create a new author with bookIds', async () => {
+        const response = await request(app).post('/api/v1/authors').send({ name: 'George', bookIds: [1, 2, 3] });
+        expect(response.status).toEqual(200);
+
+        const author = response.body;
+        expect(author).toEqual({
+            id: expect.any(Number),
+            name: expect.any(String),
+            Books: expect.any(Array)
+        });
+        expect(author.Books.length).toEqual(3);
     });
 });
