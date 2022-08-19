@@ -2,7 +2,7 @@ const request = require('supertest');
 const app = require('../lib/app');
 const db = require('../lib/models');
 
-describe('backend-express-template routes', () => {
+describe('sequelize bookstore routes', () => {
     beforeEach(async () => {
         try {
             const seeder = require('../lib/seeders/20220817225406-initial');
