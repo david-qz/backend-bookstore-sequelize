@@ -12,6 +12,7 @@ describe('backend-express-template routes', () => {
             await sequelize.sync({ force: true });
             await seeder.up(queryInterface, sequelize);
         } catch (error) {
+            // eslint-disable-next-line no-console
             console.log(error);
         }
     });
