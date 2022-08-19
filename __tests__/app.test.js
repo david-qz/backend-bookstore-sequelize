@@ -4,12 +4,16 @@ const db = require('../lib/models');
 
 describe('backend-express-template routes', () => {
     beforeEach(async () => {
-        const seeder = require('../lib/seeders/20220817225406-initial');
-        const sequelize = db.sequelize;
-        const queryInterface = sequelize.getQueryInterface();
+        try {
+            const seeder = require('../lib/seeders/20220817225406-initial');
+            const sequelize = db.sequelize;
+            const queryInterface = sequelize.getQueryInterface();
 
-        await sequelize.sync({ force: true });
-        await seeder.up(queryInterface, sequelize);
+            await sequelize.sync({ force: true });
+            await seeder.up(queryInterface, sequelize);
+        } catch (error) {
+            console.log(error);
+        }
     });
     afterAll(async () => {
         await db.sequelize.close();
@@ -45,5 +49,19 @@ describe('backend-express-template routes', () => {
                 }
             ]
         });
+    });
+
+    it('POST /api/v1/books should create a new book with authorIds', async () => {
+        const response = await request(app).post('/api/v1/books').send({ title: 'Some Book', releaseYear: 2018, authorIds: [1, 2] });
+        expect(response.status).toEqual(200);
+
+        const book = response.body;
+        expect(book).toEqual({
+            id: expect.any(Number),
+            title: expect.any(String),
+            releaseYear: expect.any(Number),
+            Authors: expect.any(Array)
+        });
+        expect(book.Authors.length).toEqual(2);
     });
 });
